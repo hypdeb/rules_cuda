@@ -25,3 +25,10 @@ local_path_override(
     module_name = "rules_cuda_examples",
     path = "./examples",
 )
+
+bazel_dep(name = "rules_cc", version = "0.1.1")
+git_override(
+    module_name = "rules_cc",
+    remote = "https://github.com/bazelbuild/rules_cc.git",
+    commit = "d74915024017250e46d95e91a3defc34174effe0",
+)

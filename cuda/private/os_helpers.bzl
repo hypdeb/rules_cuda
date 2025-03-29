@@ -1,4 +1,5 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
+load("@rules_cc//cc:defs.bzl", "cc_import", "cc_library")
 
 def if_linux(if_true, if_false = []):
     return select({
@@ -27,13 +28,14 @@ def cc_import_versioned_sos(name, shared_library):
     # NOTE: only empty when the componnent is not installed on the system, say, cublas is not installed with apt-get
     so_paths = native.glob([shared_library + "*"], allow_empty = True)
 
-    [native.cc_import(
-        name = paths.basename(p),
-        shared_library = p,
-        target_compatible_with = ["@platforms//os:linux"],
-    ) for p in so_paths]
+    for p in so_paths:
+        cc_import(
+            name = paths.basename(p),
+            shared_library = p,
+            target_compatible_with = ["@platforms//os:linux"],
+        )
 
-    native.cc_library(
+    cc_library(
         name = name,
         deps = [":%s" % paths.basename(p) for p in so_paths],
     )
